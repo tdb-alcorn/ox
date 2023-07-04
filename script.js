@@ -90,7 +90,6 @@ function eq(args) {
 }
 
 function ifImpl(args) {
-  console.log(args);
   if (args["cond"]["value"]) {
     return args["true"];
   }
@@ -106,6 +105,29 @@ function expandMacro(tree, expr) {
     result = fn["impl"](args);
     return result;
   }
+}
+
+// syntax
+
+function parse(prog) {
+  a = prog.split("(");
+  fn = a[0];
+  args = a[1];
+  args = args.split(")")[0];
+  args = args.split(",");
+  result = {};
+  result["call"] = fn;
+  result["args"] = {};
+  for (i in args) {
+    a = args[i];
+    console.log(a);
+    pair = a.split("=");
+    nom = pair[0].trim();
+    // todo: parse the value properly
+    value = pair[1].trim();
+    result["args"][nom] = value;
+  }
+  return result;
 }
 
 
@@ -181,6 +203,7 @@ expr4 = {
 
 display(evaluate(tree, expr4), "expr4");
 
+// todo: make if a builtin so that the true branch is only evaluated if cond is true etc.
 tree["if"] = {
   "type":"function",
   "args": {
@@ -208,3 +231,6 @@ expr5 = {
 };
 
 display(evaluate(tree, expr5), "expr5");
+
+
+display(parse("int.add(left=1, right=2)"), "parse");
